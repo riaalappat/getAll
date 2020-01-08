@@ -1,0 +1,157 @@
+..........................Product.java.............................
+package com.deloitte.estore.model;
+
+public class Product {
+	private int PID;
+	private String PNAME;
+	private float PRICE;
+	
+	public Product() {}
+
+	
+	
+
+	public Product(int pID, String pNAME, float pRICE) {
+		super();
+		PID = pID;
+		PNAME = pNAME;
+		PRICE = pRICE;
+	}
+
+
+
+
+	public int getPID() {
+		return PID;
+	}
+
+	public void setPID(int pID) {
+		PID = pID;
+	}
+
+	public String getPNAME() {
+		return PNAME;
+	}
+
+	public void setPNAME(String pNAME) {
+		PNAME = pNAME;
+	}
+
+	public float getPRICE() {
+		return PRICE;
+	}
+
+	public void setPRICE(float pRICE) {
+		PRICE = pRICE;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [PID=" + PID + ", PNAME=" + PNAME + ", PRICE=" + PRICE + "]";
+	}
+	
+	
+	
+
+}
+.........................................GetAllProducts.java..............................................
+ package com.deloitte.estore.controller;
+
+import java.util.List;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.deloitte.estore.model.Product;
+import com.deloitte.estore.service.ProductService;
+import com.deloitte.estore.service.ProductServicImpl;
+
+ 
+@WebServlet("/showall")
+public class GetAllProducts extends HttpServlet
+{
+	private static final long serialVersionUID = 1L;
+   
+	 
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+		{
+			
+			
+			 ProductService service=new ProductServicImpl();
+			 try {
+				 List<Product> products=service.getAllProducts();
+				 HttpSession ssn=request.getSession();
+						 ssn.setAttribute("products",products);
+						 response.sendRedirect("showall.jsp");
+				 
+				 
+			    
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+			 
+		}
+		
+	
+ 
+}
+............................................showall.jsp.......................................
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%><!DOCTYPE html>
+    <%@page import="com.deloitte.estore.model.Product" %>
+    <%@page import ="java.util.List" %>
+    
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<%
+List<Product> products=(List<Product>)session.getAttribute("products");
+%>
+<table border=1>
+<tr>
+<th>Product Id</th>
+<th>Product Name</th>
+<th>Price</th>
+</tr>
+<%
+for(Product p:products){
+	out.println("<tr><td>"+p.getPID()+"</td>");
+	out.println("<td>"+p.getPNAME()+"</td>");
+	out.println("<td>"+p.getPRICE()+"</td></tr>");
+	
+}
+%>
+
+</table>
+</body>
+</html>
+..............................................addProduct.jsp...............................
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+
+<body>
+<form action="addproduct" method="post">
+Enter product id:<input type="number" name="pid"><br>
+Enter product name:<input type="text"name="pname">
+Enter product price:<input type="text"name="price">
+<input type="submit" value="save">
+</form>
+
+
+
+</body>
+</html>
+................................

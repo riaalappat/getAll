@@ -1,0 +1,168 @@
+To communicate btw servlets/servlet calling:
+
+1-request dispatcher (calling same website)
+RequestdDispatcher rd=req.getRequestDispatcher();
+
+
+rd.forward(req,res)
+2-servlet redirect
+
+
+..................add.java......................
+
+package com.deloitte;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/add1")
+public class add extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+  
+    
+	protected void Service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int a=Integer.parseInt(request.getParameter("t1"));
+		int b=Integer.parseInt(request.getParameter("t1"));
+		int sum=a+b;
+		
+		
+		RequestDispatcher rd=request.getRequestDispatcher("cube");
+		request.setAttribute("sum", sum);
+		rd.forward(request, response);
+		//response.sendRedirect("cube?sum="+sum);
+	}
+
+}
+.........................cube.java
+package com.deloitte;
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+
+
+@WebServlet("/cube")
+public class Cube extends HttpServlet{
+		private static final long serialVersionUID = 1L;
+		
+		
+		protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			
+			int sum=(int)request.getAttribute("sum");
+			int cube=sum*sum*sum;
+			
+			response.getWriter().println("cube ="+cube);
+
+			/*
+                        int sum=Integer.parseInt(request.getParameter("sum"));
+			
+			int cube=sum*sum*sum;
+			
+			response.getWriter().println("sum ="+sum);
+			response.getWriter().println("cube ="+cube);
+
+                        */
+		}
+
+	}
+
+
+...................index.html.............
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="add" >
+Enter num1<input type="text" name="t1">
+Enter num2<input type="text" name="t2">
+
+<input type="submit" value="Enter">
+
+
+</form>
+Hello
+</body>
+</html>
+
+.............................................................................****************SESSION................................CUBE
+package com.deloitte;
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+
+
+@WebServlet("/cube")
+public class Cube extends HttpServlet{
+		private static final long serialVersionUID = 1L;
+		
+		
+		protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			HttpSession ssn=request.getSession();
+			int sum=(int)ssn.getAttribute("sum");
+			int cube=sum*sum*sum;
+			response.getWriter().println("cube ="+cube);
+			
+		}
+
+	}
+
+....................................ADD
+package com.deloitte;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+@WebServlet("/add")
+public class add extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+  
+    
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int a=Integer.parseInt(request.getParameter("t1"));
+		int b=Integer.parseInt(request.getParameter("t2"));
+		int sum=a+b;
+		
+		HttpSession ssn=request.getSession();
+		ssn.setAttribute("sum", sum);
+
+		response.sendRedirect("cube?sum="+sum);
+	}
+
+}
+
+
+
